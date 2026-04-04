@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable
+{
+    use HasApiTokens, HasFactory, Notifiable;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        // google2fa_secret NÃO deve ser mass assignable por segurança
+        // É atribuído diretamente: $user->google2fa_secret = ...
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'google2fa_secret',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    public function passwords()
+    {
+        return $this->hasMany(Password::class);
+    }
+}
